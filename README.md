@@ -2,8 +2,8 @@
 
 ## Description : 
 
-Nous sommes un groupe d'étudiants réalisant un puissance.
-Ce projet a pour but d'utiliser la méthode min-max pour développer une IA qui pourra participer au partie .
+Nous sommes un groupe d'étudiants réalisant un puissance 4.
+Ce projet a pour but d'utiliser la méthode min-max pour développer une IA qui pourra participer au partie.
 
 ## Equipe & Rôles : 
 
