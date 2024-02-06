@@ -53,7 +53,7 @@ class Grille:
         for ligne in grille:
             # Crée le début de chaque ligne avec une barre verticale
             print("|", end="")
-            for case in ligne:
+            for _ in ligne:
                 print("   |", end='')
             print("\n+" + "---+" * 7)
         # Affiche les indices des colonnes en bas de la grille
