@@ -48,13 +48,21 @@ class Grille:
     # Affichage de la grille
     def afficher_grille(self):
         grille = [[' ' for _ in range(self.nbColonnes)] for _ in range(self.nbLignes)]
+        compteurLigne = 6
         # Crée le bord supérieur de la grille
         print("\n+" + "--" * 13 + "-+")
         for ligne in grille:
+            compteurLigne -= 1
+            compteurColonne = -1
             # Crée le début de chaque ligne avec une barre verticale
             print("|", end="")
             for _ in ligne:
-                print("   |", end='')
+                compteurColonne += 1 
+                caseActuelle = self.getCaseSpecifique(compteurLigne, compteurColonne)
+                if caseActuelle.getEstVide():
+                    print("   |", end='')
+                else:
+                    print(f" {caseActuelle.getCouleurCase()} |", end='')
             print("\n+" + "---+" * 7)
         # Affiche les indices des colonnes en bas de la grille
         print ("  1"+ "   2"+ "   3"+"   4"+"   5"+"   6"+"   7")
@@ -83,6 +91,12 @@ class Case:
     # Getter
     def getCouleurCase(self):
         return self.couleurCase
+    
+    def setCouleurCase(self,couleur):
+        self.couleurCase = couleur
+
+    def setEstVideFalse(self):
+        self.estVide = False
 
 class Pion:
     # Initalisation
