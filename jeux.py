@@ -17,23 +17,26 @@ if __name__ == "__main__":
     # Insertions des objets cases dans la grille
     grille.insertion()
 
+    quitter = False  # Initialisez une variable pour suivre si le joueur veut quitter
+
+
+while not quitter:
     # Affichage de la grille
-    affichageGrille = grille.afficher_grille()
+    grille.afficher_grille()
 
-    choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
+    choix = input("Veuillez choisir l'endroit où vous voulez jouer, ou taper 'q' pour quitter : ")
 
-    while not choix.isdigit() or int(choix) < 1 or int(choix) > 7:
-        if not choix.isdigit():
-            print("L'entrée n'est pas un entier.")
-            choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
-        else:
-            print("L'entier n'est pas entre 1 et 7.")
-            choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
-
-    choix = int(choix)  # Convertir choix en entier après la boucle pour une utilisation ultérieure
-
-    
-    grille.setCaseSpecifique(choix,choix,"O")
-    print (affichageGrille)
-    print("Votre choix à bien été enregisté")        
+    if choix.lower() == 'q':
+        quitter = True 
+    else:
+        while not choix.isdigit() or int(choix) < 1 or int(choix) > 7:
+            if not choix.isdigit():
+                print("L'entrée n'est pas un entier.")
+                choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
+            elif int(choix) < 1 or int(choix) > 7:
+                print("L'entier n'est pas entre 1 et 7.")
+                choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
+            else:     
+                choix = int(choix)  # Convertir choix en entier après la boucle pour une utilisation ultérieure
+          
     
