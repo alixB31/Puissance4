@@ -39,7 +39,7 @@ if __name__ == "__main__":
     while not quitter:
         # Affichage de la grille
         grille.afficher_grille()
-
+        
         choix = input("Veuillez choisir l'endroit où vous voulez jouer, ou taper 'q' pour quitter : ")
 
         if choix.lower() == 'q':
@@ -73,8 +73,49 @@ if __name__ == "__main__":
                 if grille.grille_pleine():
                     print("La grille est pleine. La partie est terminée.")
                     break
-
+                    
             # Vérifier si la grille est pleine après le coup de l'IA
             if grille.grille_pleine():
                 print("La grille est pleine. La partie est terminée.")
                 break 
+
+
+
+
+    def evaluation_etat_jeu(grille):
+        # Vérifier s'il y a un gagnant
+        gagnant = rechercher_gagnant(grille)
+        if gagnant:
+            return gagnant
+
+
+    def rechercher_gagnant(grille):
+        for ligne in range(grille.getNbLignes()):
+            for colonne in range(grille.getNbColonnes()):
+                couleur = grille.getCaseSpecifique(ligne, colonne).getCouleurCase()
+                if couleur != "":  # Si la case n'est pas vide
+                    # Vérifier l'horizontal
+                    if colonne <= grille.getNbColonnes() - 4:
+                        if grille.getCaseSpecifique(ligne, colonne + 1).getCouleurCase() == couleur and \
+                                grille.getCaseSpecifique(ligne, colonne + 2).getCouleurCase() == couleur and \
+                                grille.getCaseSpecifique(ligne, colonne + 3).getCouleurCase() == couleur:
+                            return couleur
+                    # Vérifier la verticale
+                    if ligne <= grille.getNbLignes() - 4:
+                        if grille.getCaseSpecifique(ligne + 1, colonne).getCouleurCase() == couleur and \
+                                grille.getCaseSpecifique(ligne + 2, colonne).getCouleurCase() == couleur and \
+                                grille.getCaseSpecifique(ligne + 3, colonne).getCouleurCase() == couleur:
+                            return couleur
+                    # Vérifier la diagonale (/)
+                    if colonne <= grille.getNbColonnes() - 4 and ligne >= 3:
+                        if grille.getCaseSpecifique(ligne - 1, colonne + 1).getCouleurCase() == couleur and \
+                                grille.getCaseSpecifique(ligne - 2, colonne + 2).getCouleurCase() == couleur and \
+                                grille.getCaseSpecifique(ligne - 3, colonne + 3).getCouleurCase() == couleur:
+                            return couleur
+                    # Vérifier la diagonale (\)
+                    if colonne >= 3 and ligne >= 3:
+                        if grille.getCaseSpecifique(ligne - 1, colonne - 1).getCouleurCase() == couleur and \
+                                grille.getCaseSpecifique(ligne - 2, colonne - 2).getCouleurCase() == couleur and \
+                                grille.getCaseSpecifique(ligne - 3, colonne - 3).getCouleurCase() == couleur:
+                            return couleur
+        return None  # Aucun gagnant trouvé
