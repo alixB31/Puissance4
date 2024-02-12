@@ -1,6 +1,21 @@
 import Objets  # Importe le module Objets
 import random
 
+# Fonction pour que l'IA joue de manière aléatoire
+def jouer_IA_aleatoire(grille, symbole):
+    while True:
+        choix_IA = random.randint(1, 7)  # Choix aléatoire de la colonne
+        colonne = choix_IA - 1  # Convertir en indice de colonne (0-indexed)
+        numLigne = 0
+        while not grille.getCaseSpecifique(numLigne, colonne).getEstVide() and numLigne < 5:
+            numLigne += 1
+            if numLigne == 5:
+                continue  # La colonne est remplie, essayer une autre colonne
+        case = grille.getCaseSpecifique(numLigne, colonne)
+        case.setEstVideFalse()
+        case.setCouleurCase(symbole)
+        break
+
 # Permet de lancer la partie
 if __name__ == "__main__":
 
@@ -10,10 +25,10 @@ if __name__ == "__main__":
 
     # Demande le nom du joueur
     nomUtilisateur = input("Veuillez saisir votre nom : ")
-    symboleAleatoire = random.choice(["X", "O"])
+    symboleJoueur = "O"
     # Création du joueur et association d'une couleur
-    joueur = Objets.Joueur(nomUtilisateur,symboleAleatoire)
-    print("\n Le symbole " + symboleAleatoire + " vous a été assigné")
+    joueur = Objets.Joueur(nomUtilisateur,symboleJoueur)
+    print("\n Le symbole " + symboleJoueur + " vous a été assigné")
 
     # Insertions des objets cases dans la grille
     grille.insertion()
@@ -47,7 +62,19 @@ if __name__ == "__main__":
                     print ("La colonne est remplie, jouez autre part")
             case = grille.getCaseSpecifique(numLigne,choix)
             case.setEstVideFalse()  
-            case.setCouleurCase(symboleAleatoire)
-                    
-          
-    
+            case.setCouleurCase(symboleJoueur)
+
+            # Si le jeu n'est pas terminé et ce n'est pas le tour de l'IA
+            if not quitter and symboleJoueur != "X":
+                jouer_IA_aleatoire(grille, "X")  # L'IA joue avec le symbole "X"
+                # Affichage de la grille après le coup de l'IA
+                grille.afficher_grille() 
+                # Vérifier si la grille est pleine après le coup du joueur
+                if grille.grille_pleine():
+                    print("La grille est pleine. La partie est terminée.")
+                    break
+
+            # Vérifier si la grille est pleine après le coup de l'IA
+            if grille.grille_pleine():
+                print("La grille est pleine. La partie est terminée.")
+                break 

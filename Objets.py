@@ -66,6 +66,14 @@ class Grille:
             print("\n+" + "---+" * 7)
         # Affiche les indices des colonnes en bas de la grille
         print ("  1"+ "   2"+ "   3"+"   4"+"   5"+"   6"+"   7")
+    
+    # Méthode pour vérifier si la grille est pleine
+    def grille_pleine(self):
+        for ligne in self.grille:
+            for case in ligne:
+                if case.getEstVide():
+                    return False  # S'il y a au moins une case vide, la grille n'est pas pleine
+        return True  # Si aucune case vide n'est trouvée, la grille est pleine
 
     
 class Case:
