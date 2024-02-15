@@ -75,13 +75,6 @@ class Grille:
                     return False  # S'il y a au moins une case vide, la grille n'est pas pleine
         return True  # Si aucune case vide n'est trouvée, la grille est pleine
 
-    def colonne_pleine(self):
-        for ligne in self.grille:
-            for case in ligne :
-                if ligne == 5 and case.estVide == False :
-                    return False
-        return True
-
 class Case:
     # Initalisation
     def __init__(self,ligne,colonne):
