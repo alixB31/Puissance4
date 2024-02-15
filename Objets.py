@@ -78,8 +78,9 @@ class Grille:
     def colonne_pleine(self):
         for ligne in self.grille:
             for case in ligne :
-                if ligne == 5 and case.getEstVide() :
+                if ligne == 5 and case.estVide == False :
                     return False
+        return True
 
 class Case:
     # Initalisation

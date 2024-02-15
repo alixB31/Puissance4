@@ -1,4 +1,4 @@
-import Objets  # Importe le module Objets
+import Objets # Importe le module Objets
 import random
 
 # Fonction pour que l'IA joue de manière aléatoire
@@ -16,18 +16,49 @@ def jouer_IA_aleatoire(grille, symbole):
         case.setCouleurCase(symbole)
         break
 
+def rechercher_gagnant(grille):
+    for ligne in range(grille.getNbLignes()):
+        for colonne in range(grille.getNbColonnes()):
+            couleur = grille.getCaseSpecifique(ligne, colonne).getCouleurCase()
+            if couleur != "":  # Si la case n'est pas vide
+                # Vérifier l'horizontal
+                if colonne <= grille.getNbColonnes() - 4:
+                    if grille.getCaseSpecifique(ligne, colonne + 1).getCouleurCase() == couleur and \
+                            grille.getCaseSpecifique(ligne, colonne + 2).getCouleurCase() == couleur and \
+                            grille.getCaseSpecifique(ligne, colonne + 3).getCouleurCase() == couleur:
+                        return couleur
+                # Vérifier la verticale
+                if ligne <= grille.getNbLignes() - 4:
+                    if grille.getCaseSpecifique(ligne + 1, colonne).getCouleurCase() == couleur and \
+                            grille.getCaseSpecifique(ligne + 2, colonne).getCouleurCase() == couleur and \
+                            grille.getCaseSpecifique(ligne + 3, colonne).getCouleurCase() == couleur:
+                        return couleur
+                # Vérifier la diagonale (/)
+                if colonne <= grille.getNbColonnes() - 4 and ligne >= 3:
+                    if grille.getCaseSpecifique(ligne - 1, colonne + 1).getCouleurCase() == couleur and \
+                            grille.getCaseSpecifique(ligne - 2, colonne + 2).getCouleurCase() == couleur and \
+                            grille.getCaseSpecifique(ligne - 3, colonne + 3).getCouleurCase() == couleur:
+                        return couleur
+                # Vérifier la diagonale (\)
+                if colonne >= 3 and ligne >= 3:
+                    if grille.getCaseSpecifique(ligne - 1, colonne - 1).getCouleurCase() == couleur and \
+                            grille.getCaseSpecifique(ligne - 2, colonne - 2).getCouleurCase() == couleur and \
+                            grille.getCaseSpecifique(ligne - 3, colonne - 3).getCouleurCase() == couleur:
+                        return couleur
+    return False  # Aucun gagnant trouvé
+
 # Permet de lancer la partie
 if __name__ == "__main__":
 
     # Création de l'objet grille
-    grille = Objets.Grille()
+    grille = Objet.Grille()
 
 
     # Demande le nom du joueur
     nomUtilisateur = input("Veuillez saisir votre nom : ")
     symboleJoueur = "O"
     # Création du joueur et association d'une couleur
-    joueur = Objets.Joueur(nomUtilisateur,symboleJoueur)
+    joueur = Objet.Joueur(nomUtilisateur,symboleJoueur)
     print("\n Le symbole " + symboleJoueur + " vous a été assigné")
 
     # Insertions des objets cases dans la grille
@@ -37,6 +68,7 @@ if __name__ == "__main__":
 
 
     while not quitter:
+        rechercher_gagnant(grille)
         # Affichage de la grille
         grille.afficher_grille()
         
@@ -78,44 +110,3 @@ if __name__ == "__main__":
             if grille.grille_pleine():
                 print("La grille est pleine. La partie est terminée.")
                 break 
-
-
-
-
-    def evaluation_etat_jeu(grille):
-        # Vérifier s'il y a un gagnant
-        gagnant = rechercher_gagnant(grille)
-        if gagnant:
-            return gagnant
-
-
-    def rechercher_gagnant(grille):
-        for ligne in range(grille.getNbLignes()):
-            for colonne in range(grille.getNbColonnes()):
-                couleur = grille.getCaseSpecifique(ligne, colonne).getCouleurCase()
-                if couleur != "":  # Si la case n'est pas vide
-                    # Vérifier l'horizontal
-                    if colonne <= grille.getNbColonnes() - 4:
-                        if grille.getCaseSpecifique(ligne, colonne + 1).getCouleurCase() == couleur and \
-                                grille.getCaseSpecifique(ligne, colonne + 2).getCouleurCase() == couleur and \
-                                grille.getCaseSpecifique(ligne, colonne + 3).getCouleurCase() == couleur:
-                            return couleur
-                    # Vérifier la verticale
-                    if ligne <= grille.getNbLignes() - 4:
-                        if grille.getCaseSpecifique(ligne + 1, colonne).getCouleurCase() == couleur and \
-                                grille.getCaseSpecifique(ligne + 2, colonne).getCouleurCase() == couleur and \
-                                grille.getCaseSpecifique(ligne + 3, colonne).getCouleurCase() == couleur:
-                            return couleur
-                    # Vérifier la diagonale (/)
-                    if colonne <= grille.getNbColonnes() - 4 and ligne >= 3:
-                        if grille.getCaseSpecifique(ligne - 1, colonne + 1).getCouleurCase() == couleur and \
-                                grille.getCaseSpecifique(ligne - 2, colonne + 2).getCouleurCase() == couleur and \
-                                grille.getCaseSpecifique(ligne - 3, colonne + 3).getCouleurCase() == couleur:
-                            return couleur
-                    # Vérifier la diagonale (\)
-                    if colonne >= 3 and ligne >= 3:
-                        if grille.getCaseSpecifique(ligne - 1, colonne - 1).getCouleurCase() == couleur and \
-                                grille.getCaseSpecifique(ligne - 2, colonne - 2).getCouleurCase() == couleur and \
-                                grille.getCaseSpecifique(ligne - 3, colonne - 3).getCouleurCase() == couleur:
-                            return couleur
-        return None  # Aucun gagnant trouvé
