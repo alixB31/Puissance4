@@ -16,6 +16,36 @@ def jouer_IA_aleatoire(grille, symbole):
         case.setCouleurCase(symbole)
         break
 
+# Fonction pour que l'IA joue de manière aléatoire
+def evaluation(grille, symbole):
+    meilleurCoup = 0
+    valeurCoup = 0 
+    for numeroCoupTeste in range(grille.getNbColonnes()):
+        valeurCoupTeste = 0
+        
+        if valeurCoupTeste > valeurCoup :
+            valeurCoup = valeurCoupTeste
+            meilleurCoup = numeroCoupTeste
+    
+    return meilleurCoup
+
+# Fonction pour que l'IA joue de manière aléatoire
+def jouer_IA(grille, symbole):
+    while True:
+        choix_IA = evaluation(grille, symbole)  # Choix aléatoire de la colonne
+        colonne = choix_IA - 1  # Convertir en indice de colonne (0-indexed)
+        numLigne = 0
+        while not grille.getCaseSpecifique(numLigne, colonne).getEstVide() and numLigne < 5:
+            numLigne += 1
+            if numLigne == 5:
+                continue  # La colonne est remplie, essayer une autre colonne
+        case = grille.getCaseSpecifique(numLigne, colonne)
+        case.setEstVideFalse()
+        case.setCouleurCase(symbole)
+        break
+
+
+
 def rechercher_gagnant(grille):
     for ligne in range(grille.getNbLignes()):
         for colonne in range(grille.getNbColonnes()):
