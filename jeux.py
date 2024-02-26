@@ -16,13 +16,34 @@ def jouer_IA_aleatoire(grille, symbole):
         case.setCouleurCase(symbole)
         break
 
+
+def pointVoisin(symbole):
+    if symbole == "O":
+        return 1
+    elif symbole == "X":
+        return -1
+    else:
+        return 0
+    
 # Fonction pour que l'IA joue de manière aléatoire
 def evaluation(grille, symbole):
     meilleurCoup = 0
     valeurCoup = 0 
     for numeroCoupTeste in range(grille.getNbColonnes()):
         valeurCoupTeste = 0
-        
+        # On recupere la ligne ou on pourrais théoriquement jouer 
+        numLigne = 0
+        while not grille.getCaseSpecifique(numLigne,numeroCoupTeste).getEstVide() and numLigne < 5:
+            numLigne += 1
+        # On regarde les 8 cases adjacentes
+        # case gauche
+        if numeroCoupTeste >= 1:
+            symbole = grille.getCaseSpecifique(numLigne,numeroCoupTeste-1).getSymbole()
+            valeurCoupTeste += pointVoisin(symbole)
+        # case haut gauche
+        if numeroCoupTeste >= 1 and numLigne < 4:
+            symbole = grille.getCaseSpecifique(numLigne+1,numeroCoupTeste-1).getSymbole()
+            valeurCoupTeste += pointVoisin(symbole)
         if valeurCoupTeste > valeurCoup :
             valeurCoup = valeurCoupTeste
             meilleurCoup = numeroCoupTeste
