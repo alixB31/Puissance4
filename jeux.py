@@ -1,6 +1,6 @@
 import Objets # Importe le module Objets
 import random
-
+import copy
 # Fonction pour que l'IA joue de manière aléatoire
 def jouer_IA_aleatoire(grille, symbole):
     while True:
@@ -16,37 +16,97 @@ def jouer_IA_aleatoire(grille, symbole):
         case.setCouleurCase(symbole)
         break
 
+def compter_lignes_autour(grille, ligne, colonne, symbole):
+    count = 0
+    for delta_colonne in range(-3, 1):
+        if colonne + delta_colonne >= 0 and colonne + delta_colonne + 3 < grille.getNbColonnes():
+            if grille.getCaseSpecifique(ligne, colonne + delta_colonne).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne, colonne + delta_colonne).getCouleurCase() == "" and \
+               grille.getCaseSpecifique(ligne, colonne + delta_colonne + 1).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne, colonne + delta_colonne + 1).getCouleurCase() == "" and \
+               grille.getCaseSpecifique(ligne, colonne + delta_colonne + 2).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne, colonne + delta_colonne + 2).getCouleurCase() == "" and \
+               grille.getCaseSpecifique(ligne, colonne + delta_colonne + 3).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne, colonne + delta_colonne + 3).getCouleurCase() == "":
+                count += 1
+    return count
 
-def pointVoisin(symbole):
-    if symbole == "O":
-        return 1
-    elif symbole == "X":
-        return -1
-    else:
-        return 0
+def compter_colonnes_autour(grille, ligne, colonne, symbole):
+    count = 0
+    for delta_ligne in range(-3, 1):
+        if ligne + delta_ligne >= 0 and ligne + delta_ligne + 3 < grille.getNbLignes():
+            if grille.getCaseSpecifique(ligne + delta_ligne, colonne).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta_ligne, colonne).getCouleurCase() == "" and \
+               grille.getCaseSpecifique(ligne + delta_ligne + 1, colonne).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta_ligne + 1, colonne).getCouleurCase() =="" and \
+               grille.getCaseSpecifique(ligne + delta_ligne + 2, colonne).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta_ligne + 2, colonne).getCouleurCase() =="" and \
+               grille.getCaseSpecifique(ligne + delta_ligne + 3, colonne).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta_ligne + 3, colonne).getCouleurCase() =="":
+                count += 1
+    return count
+
+def compter_diagonales_autour(grille, ligne, colonne, symbole):
+    count = 0
+    for delta in range(-3, 1):
+        if colonne + delta >= 0 and colonne + delta + 3 < grille.getNbColonnes() \
+                and ligne + delta >= 0 and ligne + delta + 3 < grille.getNbLignes():
+            if grille.getCaseSpecifique(ligne + delta, colonne + delta).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta, colonne + delta).getCouleurCase() =="" and \
+               grille.getCaseSpecifique(ligne + delta + 1, colonne + delta + 1).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta + 1, colonne + delta + 1).getCouleurCase() =="" and \
+               grille.getCaseSpecifique(ligne + delta + 2, colonne + delta + 2).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta + 2, colonne + delta + 2).getCouleurCase() =="" and \
+               grille.getCaseSpecifique(ligne + delta + 3, colonne + delta + 3).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta + 3, colonne + delta + 3).getCouleurCase() == "" :
+                count += 1
+    return count
+
+def compter_diagonales_inverse_autour(grille, ligne, colonne, symbole):
+    count = 0
+    for delta in range(-3, 1):
+        if colonne - delta >= 0 and colonne - delta + 3 < grille.getNbColonnes() \
+                and ligne + delta >= 0 and ligne + delta + 3 < grille.getNbLignes():
+            if grille.getCaseSpecifique(ligne + delta, colonne - delta).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta, colonne - delta).getCouleurCase() =="" and \
+               grille.getCaseSpecifique(ligne + delta + 1, colonne - delta + 1).getCouleurCase() == symbole or  grille.getCaseSpecifique(ligne + delta + 1, colonne - delta + 1).getCouleurCase() =="" and \
+               grille.getCaseSpecifique(ligne + delta + 2, colonne - delta + 2).getCouleurCase() == symbole or  grille.getCaseSpecifique(ligne + delta + 2, colonne - delta + 2).getCouleurCase() =="" and \
+               grille.getCaseSpecifique(ligne + delta + 3, colonne - delta + 3).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta + 3, colonne - delta + 3).getCouleurCase() == "":
+                count += 1
+    return count
+
+def compter_possibilites_autour(grille, ligne, colonne, symbole):
+    # Initialisation du compteur de possibilités
+    possibilites = 0
+    # Recherche de puissance 4 horizontalement
+    possibilites += compter_lignes_autour(grille, ligne, colonne, symbole)
+    # Recherche de puissance 4 verticalement
+    possibilites += compter_colonnes_autour(grille, ligne, colonne, symbole)
+    # Recherche de puissance 4 en diagonale (/)
+    possibilites += compter_diagonales_autour(grille, ligne, colonne, symbole)
+    # Recherche de puissance 4 en diagonale (\)
+    possibilites += compter_diagonales_inverse_autour(grille, ligne, colonne, symbole)
+    return possibilites
+
     
 # Fonction pour que l'IA joue de manière aléatoire
 def evaluation(grille, symbole):
     meilleurCoup = 0
     valeurCoup = 0 
+    grilleTest = copy.deepcopy(grille)
     for numeroCoupTeste in range(grille.getNbColonnes()):
         valeurCoupTeste = 0
         # On recupere la ligne ou on pourrais théoriquement jouer 
         numLigne = 0
-        while not grille.getCaseSpecifique(numLigne,numeroCoupTeste).getEstVide() and numLigne < 5:
+        while not grilleTest.getCaseSpecifique(numLigne, numeroCoupTeste).getEstVide() and numLigne < 5:
             numLigne += 1
-        # On regarde les 8 cases adjacentes
-        # case gauche
-        if numeroCoupTeste >= 1:
-            symbole = grille.getCaseSpecifique(numLigne,numeroCoupTeste-1).getSymbole()
-            valeurCoupTeste += pointVoisin(symbole)
-        # case haut gauche
-        if numeroCoupTeste >= 1 and numLigne < 4:
-            symbole = grille.getCaseSpecifique(numLigne+1,numeroCoupTeste-1).getSymbole()
-            valeurCoupTeste += pointVoisin(symbole)
-        if valeurCoupTeste > valeurCoup :
-            valeurCoup = valeurCoupTeste
-            meilleurCoup = numeroCoupTeste
+        if not grilleTest.getCaseSpecifique(5, numeroCoupTeste).getEstVide():
+            continue
+        else:
+            case = grilleTest.getCaseSpecifique(numLigne, numeroCoupTeste)
+            # Regarde si l'adversaire peut gagner en jouant la 
+            case.setCouleurCase("O")
+            if rechercher_gagnant(grilleTest) == "O":
+                valeurCoupTeste +=900
+            # Regarde si l'ia peut gagner en jouant la 
+            case.setCouleurCase(symbole)
+            if rechercher_gagnant(grilleTest) == symbole:  # Si le coup permet à l'IA de gagner
+                valeurCoupTeste +=1000
+            # Reset la case
+            case.setCouleurCase("")
+            valeurCoupTeste += compter_possibilites_autour(grilleTest,numLigne,numeroCoupTeste, symbole)
+            print ("valeur actuelle")
+            print(valeurCoupTeste)
+            if valeurCoupTeste > valeurCoup :
+                valeurCoup = valeurCoupTeste
+                meilleurCoup = numeroCoupTeste
     
     return meilleurCoup
 
@@ -54,7 +114,7 @@ def evaluation(grille, symbole):
 def jouer_IA(grille, symbole):
     while True:
         choix_IA = evaluation(grille, symbole)  # Choix aléatoire de la colonne
-        colonne = choix_IA - 1  # Convertir en indice de colonne (0-indexed)
+        colonne = choix_IA  
         numLigne = 0
         while not grille.getCaseSpecifique(numLigne, colonne).getEstVide() and numLigne < 5:
             numLigne += 1
@@ -148,7 +208,7 @@ if __name__ == "__main__":
         
             # Si le jeu n'est pas terminé et ce n'est pas le tour de l'IA
             if not quitter and symboleJoueur != "X":
-                jouer_IA_aleatoire(grille, "X")  # L'IA joue avec le symbole "X"
+                jouer_IA(grille, "X")  # L'IA joue avec le symbole "X"
                 # Affichage de la grille après le coup de l'IA
                 grille.afficher_grille() 
                 # Vérifier si la grille est pleine après le coup du joueur
