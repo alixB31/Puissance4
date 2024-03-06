@@ -75,42 +75,79 @@ def compter_possibilites_autour(grille, ligne, colonne, symbole):
     possibilites += compter_diagonales_inverse_autour(grille, ligne, colonne, symbole)
     return possibilites
 
-    
-# Fonction pour que l'IA joue de manière aléatoire
-def evaluation(grille, symbole):
+
+def evaluation(grille):
     meilleurCoup = 0
     valeurCoup = 0 
-    grilleTest = copy.deepcopy(grille)
-    for numeroCoupTeste in range(grille.getNbColonnes()):
-        valeurCoupTeste = 0
-        # On recupere la ligne ou on pourrais théoriquement jouer 
-        numLigne = 0
-        while not grilleTest.getCaseSpecifique(numLigne, numeroCoupTeste).getEstVide() and numLigne < 5:
-            numLigne += 1
-        if not grilleTest.getCaseSpecifique(5, numeroCoupTeste).getEstVide():
-            continue
-        else:
-            case = grilleTest.getCaseSpecifique(numLigne, numeroCoupTeste)
-            # Regarde si l'adversaire peut gagner en jouant la 
-            case.setCouleurCase("O")
-            if rechercher_gagnant(grilleTest) == "O":
-                valeurCoupTeste +=900
-            # Regarde si l'ia peut gagner en jouant la 
-            case.setCouleurCase(symbole)
-            if rechercher_gagnant(grilleTest) == symbole:  # Si le coup permet à l'IA de gagner
-                valeurCoupTeste +=1000
-            # Reset la case
-            case.setCouleurCase("")
-            valeurCoupTeste += compter_possibilites_autour(grilleTest,numLigne,numeroCoupTeste, symbole)
-            print ("valeur actuelle")
-            print(valeurCoupTeste)
-            if valeurCoupTeste > valeurCoup :
-                valeurCoup = valeurCoupTeste
-                meilleurCoup = numeroCoupTeste
-    
-    return meilleurCoup
-
+    symbole = "O"
+    if rechercher_gagnant(grille) == symbole:  # Si le coup permet au X de gagner
+        valeurCoup +=1000
+    symbole = "X"
+    if rechercher_gagnant(grille) == symbole:  # Si le coup permet au O de gagner
+        valeurCoup -=1000
+    for colonne in range(grille.getNbColonnes()):
+        for ligne in range(grille.getNbLignes()):
+            symbole = "O" 
+            valeurCoup += compter_possibilites_autour(grille,ligne,colonne,symbole)
+            symbole = "X"
+            valeurCoup -= compter_possibilites_autour(grille,ligne,colonne,symbole)
+    print ("valeur coup: ")
+    print(valeurCoup)        
+    return valeurCoup
+                
 # Fonction pour que l'IA joue de manière aléatoire
+# def evaluation(grille, symbole):
+#     meilleurCoup = 0
+#     valeurCoup = 0 
+#     grilleTest = copy.deepcopy(grille)
+#     for numeroCoupTeste in range(grille.getNbColonnes()):
+#         valeurCoupTeste = 0
+#         # On recupere la ligne ou on pourrais théoriquement jouer 
+#         numLigne = 0
+#         while not grilleTest.getCaseSpecifique(numLigne, numeroCoupTeste).getEstVide() and numLigne < 5:
+#             numLigne += 1
+#         if not grilleTest.getCaseSpecifique(5, numeroCoupTeste).getEstVide():
+#             continue
+#         else:
+#             case = grilleTest.getCaseSpecifique(numLigne, numeroCoupTeste)
+#             # Regarde si l'adversaire peut gagner en jouant la 
+#             case.setCouleurCase("O")
+#             if rechercher_gagnant(grilleTest) == "O":
+#                 valeurCoupTeste +=900
+#             # Regarde si l'ia peut gagner en jouant la 
+#             case.setCouleurCase(symbole)
+#             if rechercher_gagnant(grilleTest) == symbole:  # Si le coup permet à l'IA de gagner
+#                 valeurCoupTeste +=1000
+#             # Reset la case
+#             case.setCouleurCase("")
+#             valeurCoupTeste += compter_possibilites_autour(grilleTest,numLigne,numeroCoupTeste, symbole)
+#             # print ("valeur actuelle")
+#             # print(valeurCoupTeste)
+#             if valeurCoupTeste > valeurCoup :
+#                 valeurCoup = valeurCoupTeste
+#                 meilleurCoup = numeroCoupTeste
+#     return meilleurCoup
+
+def min_Max(grille, symbole):
+    profondeur = 3 
+    listeValeurs = []
+    grilleMinMax = copy.deepcopy(grille)
+    while profondeur > 0:
+        if (profondeur % 2 == 1):
+            symbole = "X"
+        else:
+            symbole= "O"
+        for numeroCoupTeste in range(grille.getNbColonnes()):
+            numLigne = 0
+            while not grilleMinMax.getCaseSpecifique(numLigne, numeroCoupTeste).getEstVide() and numLigne < 5:
+                numLigne += 1
+            case = grilleMinMax.getCaseSpecifique(numLigne, numeroCoupTeste)
+            case.setCouleurCase(symbole)
+            evaluation(grille,symbole)
+            
+
+
+# Fonction pour que l'IA joue avec l'évaluation
 def jouer_IA(grille, symbole):
     while True:
         choix_IA = evaluation(grille, symbole)  # Choix aléatoire de la colonne
@@ -205,10 +242,10 @@ if __name__ == "__main__":
             case = grille.getCaseSpecifique(numLigne,choix)
             case.setEstVideFalse()  
             case.setCouleurCase(symboleJoueur)
-        
+            evaluation(grille)
             # Si le jeu n'est pas terminé et ce n'est pas le tour de l'IA
             if not quitter and symboleJoueur != "X":
-                jouer_IA(grille, "X")  # L'IA joue avec le symbole "X"
+                jouer_IA_aleatoire(grille, "X")  # L'IA joue avec le symbole "X"
                 # Affichage de la grille après le coup de l'IA
                 grille.afficher_grille() 
                 # Vérifier si la grille est pleine après le coup du joueur
