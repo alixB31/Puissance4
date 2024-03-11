@@ -195,67 +195,112 @@ def rechercher_gagnant(grille):
                         return couleur
     return False  # Aucun gagnant trouvé
 
+def choix_aleatoire_debut():
+    return random.choice(["IA", "joueur"])
+
 # Permet de lancer la partie
 if __name__ == "__main__":
-
     # Création de l'objet grille
     grille = Objets.Grille()
-
 
     # Demande le nom du joueur
     nomUtilisateur = input("Veuillez saisir votre nom : ")
     symboleJoueur = "O"
+
     # Création du joueur et association d'une couleur
-    joueur = Objets.Joueur(nomUtilisateur,symboleJoueur)
+    joueur = Objets.Joueur(nomUtilisateur, symboleJoueur)
     print("\n Le symbole " + symboleJoueur + " vous a été assigné")
 
     # Insertions des objets cases dans la grille
     grille.insertion()
 
+    # Affichage de la grille
+    grille.afficher_grille()
+
+    # Choix aléatoire du premier joueur
+    premier_joueur = choix_aleatoire_debut()
+    print("Le premier joueur est :", premier_joueur)
+
     quitter = False  # Initialisez une variable pour suivre si le joueur veut quitter
 
-     # Affichage de la grille
-    grille.afficher_grille()
     while not quitter:
-        
-        choix = input("Veuillez choisir l'endroit où vous voulez jouer, ou tapez 'q' pour quitter : ")
-        if choix.lower() == 'q':
-            quitter = True 
-        else:
-            while not choix.isdigit() or int(choix) < 1 or int(choix) > 7 or not grille.getCaseSpecifique(5,int(choix)-1).getEstVide():
-                if not choix.isdigit():
-                    print("L'entrée n'est pas un entier.")
-                    choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
-                elif int(choix) < 1 or int(choix) > 7:
-                    print("L'entier n'est pas entre 1 et 7.")
-                    choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
-                elif not grille.getCaseSpecifique(5,int(choix)-1).getEstVide():
-                    print ("La colonne est remplie, jouez autre part")
-                    choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
-        if not quitter:
-            choix = int(choix)  # Convertir choix en entier après la boucle pour une utilisation ultérieure
-            choix -= 1 #-1 car les tableaux vont de 0 à 6 en python
-            numLigne = 0
-            while not grille.getCaseSpecifique(numLigne,choix).getEstVide() and numLigne < 5:
-                numLigne += 1
-                
-            case = grille.getCaseSpecifique(numLigne,choix)
-            case.setEstVideFalse()  
-            case.setCouleurCase(symboleJoueur)
-            evaluation(grille)
-            # Si le jeu n'est pas terminé et ce n'est pas le tour de l'IA
-            if not quitter and symboleJoueur != "X":
-                jouer_IA_aleatoire(grille, "X")  # L'IA joue avec le symbole "X"
-                # Affichage de la grille après le coup de l'IA
-                grille.afficher_grille() 
-                # Vérifier si la grille est pleine après le coup du joueur
+        if premier_joueur == "joueur":
+            choix = input("Veuillez choisir l'endroit où vous voulez jouer, ou tapez 'q' pour quitter : ")
+            if choix.lower() == 'q':
+                quitter = True
+            else:
+                while not choix.isdigit() or int(choix) < 1 or int(choix) > 7 or not grille.getCaseSpecifique(5, int(choix) - 1).getEstVide():
+                    if not choix.isdigit():
+                        print("L'entrée n'est pas un entier.")
+                        choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
+                    elif int(choix) < 1 or int(choix) > 7:
+                        print("L'entier n'est pas entre 1 et 7.")
+                        choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
+                    elif not grille.getCaseSpecifique(5, int(choix) - 1).getEstVide():
+                        print("La colonne est remplie, jouez autre part")
+                        choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
+            if not quitter:
+                choix = int(choix)  # Convertir choix en entier après la boucle pour une utilisation ultérieure
+                choix -= 1  # -1 car les tableaux vont de 0 à 6 en python
+                numLigne = 0
+                while not grille.getCaseSpecifique(numLigne, choix).getEstVide() and numLigne < 5:
+                    numLigne += 1
+
+                case = grille.getCaseSpecifique(numLigne, choix)
+                case.setEstVideFalse()
+                case.setCouleurCase(symboleJoueur)
+                evaluation(grille)
+                # Si le jeu n'est pas terminé et ce n'est pas le tour de l'IA
+                if not quitter and symboleJoueur != "X":
+                    jouer_IA_aleatoire(grille, "X")  # L'IA joue avec le symbole "X"
+                    # Affichage de la grille après le coup de l'IA
+                    grille.afficher_grille()
+                    # Vérifier si la grille est pleine après le coup du joueur
+                    if grille.grille_pleine():
+                        print("La grille est pleine. La partie est terminée.")
+                        break
+                # Vérifier si la grille est pleine après le coup de l'IA
                 if grille.grille_pleine():
                     print("La grille est pleine. La partie est terminée.")
                     break
-            # Vérifier si la grille est pleine après le coup de l'IA
+            if rechercher_gagnant(grille) != False:
+                print(rechercher_gagnant(grille) + " a gagné")
+                quitter = True
+        else:
+            jouer_IA_aleatoire(grille, "X")  # L'IA joue avec le symbole "X"
+            # Affichage de la grille après le coup de l'IA
+            grille.afficher_grille()
             if grille.grille_pleine():
                 print("La grille est pleine. La partie est terminée.")
-                break 
-        if rechercher_gagnant(grille) != False :
-            print(rechercher_gagnant(grille) + " a gagné")
-            quitter = True
+                break
+            choix = input("Veuillez choisir l'endroit où vous voulez jouer, ou tapez 'q' pour quitter : ")
+            if choix.lower() == 'q':
+                quitter = True
+            else:
+                while not choix.isdigit() or int(choix) < 1 or int(choix) > 7 or not grille.getCaseSpecifique(5, int(choix) - 1).getEstVide():
+                    if not choix.isdigit():
+                        print("L'entrée n'est pas un entier.")
+                        choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
+                    elif int(choix) < 1 or int(choix) > 7:
+                        print("L'entier n'est pas entre 1 et 7.")
+                        choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
+                    elif not grille.getCaseSpecifique(5, int(choix) - 1).getEstVide():
+                        print("La colonne est remplie, jouez autre part")
+                        choix = input("Veuillez choisir l'endroit où vous voulez jouer : ")
+            if not quitter:
+                choix = int(choix)  # Convertir choix en entier après la boucle pour une utilisation ultérieure
+                choix -= 1  # -1 car les tableaux vont de 0 à 6 en python
+                numLigne = 0
+                while not grille.getCaseSpecifique(numLigne, choix).getEstVide() and numLigne < 5:
+                    numLigne += 1
+
+                case = grille.getCaseSpecifique(numLigne, choix)
+                case.setEstVideFalse()
+                case.setCouleurCase(symboleJoueur)
+                evaluation(grille)
+                if grille.grille_pleine():
+                    print("La grille est pleine. La partie est terminée.")
+                    break
+            if rechercher_gagnant(grille) != False:
+                print(rechercher_gagnant(grille) + " a gagné")
+                quitter = True
