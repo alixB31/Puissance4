@@ -2,19 +2,65 @@ import Objets # Importe le module Objets
 import random
 import copy
 # Fonction pour que l'IA joue de manière aléatoire
-def jouer_IA_aleatoire(grille, symbole):
-    while True:
-        choix_IA = random.randint(1, 7)  # Choix aléatoire de la colonne
-        colonne = choix_IA - 1  # Convertir en indice de colonne (0-indexed)
-        numLigne = 0
-        while not grille.getCaseSpecifique(numLigne, colonne).getEstVide() and numLigne < 5:
-            numLigne += 1
-            if numLigne == 5:
-                continue  # La colonne est remplie, essayer une autre colonne
-        case = grille.getCaseSpecifique(numLigne, colonne)
-        case.setEstVideFalse()
-        case.setCouleurCase(symbole)
-        break
+# def jouer_IA_aleatoire(grille, symbole):
+#     while True:
+#         choix_IA = random.randint(1, 7)  # Choix aléatoire de la colonne
+#         colonne = choix_IA - 1  # Convertir en indice de colonne (0-indexed)
+#         numLigne = 0
+#         while not grille.getCaseSpecifique(numLigne, colonne).getEstVide() and numLigne < 5:
+#             numLigne += 1
+#             if numLigne == 5:
+#                 continue  # La colonne est remplie, essayer une autre colonne
+#         case = grille.getCaseSpecifique(numLigne, colonne)
+#         case.setEstVideFalse()
+#         case.setCouleurCase(symbole)
+#         break
+
+# def compter_lignes_autour(grille, ligne, colonne, symbole):
+#     count = 0
+#     for delta_colonne in range(-3, 1):
+#         if colonne + delta_colonne >= 0 and colonne + delta_colonne + 3 < grille.getNbColonnes():
+#             if grille.getCaseSpecifique(ligne, colonne + delta_colonne).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne, colonne + delta_colonne).getCouleurCase() == "" and \
+#                grille.getCaseSpecifique(ligne, colonne + delta_colonne + 1).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne, colonne + delta_colonne + 1).getCouleurCase() == "" and \
+#                grille.getCaseSpecifique(ligne, colonne + delta_colonne + 2).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne, colonne + delta_colonne + 2).getCouleurCase() == "" and \
+#                grille.getCaseSpecifique(ligne, colonne + delta_colonne + 3).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne, colonne + delta_colonne + 3).getCouleurCase() == "":
+#                 count += 1
+#     return count
+
+# def compter_colonnes_autour(grille, ligne, colonne, symbole):
+#     count = 0
+#     for delta_ligne in range(-3, 1):
+#         if ligne + delta_ligne >= 0 and ligne + delta_ligne + 3 < grille.getNbLignes():
+#             if grille.getCaseSpecifique(ligne + delta_ligne, colonne).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta_ligne, colonne).getCouleurCase() == "" and \
+#                grille.getCaseSpecifique(ligne + delta_ligne + 1, colonne).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta_ligne + 1, colonne).getCouleurCase() =="" and \
+#                grille.getCaseSpecifique(ligne + delta_ligne + 2, colonne).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta_ligne + 2, colonne).getCouleurCase() =="" and \
+#                grille.getCaseSpecifique(ligne + delta_ligne + 3, colonne).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta_ligne + 3, colonne).getCouleurCase() =="":
+#                 count += 1
+#     return count
+
+# def compter_diagonales_autour(grille, ligne, colonne, symbole):
+#     count = 0
+#     for delta in range(-3, 1):
+#         if colonne + delta >= 0 and colonne + delta + 3 < grille.getNbColonnes() \
+#                 and ligne + delta >= 0 and ligne + delta + 3 < grille.getNbLignes():
+#             if grille.getCaseSpecifique(ligne + delta, colonne + delta).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta, colonne + delta).getCouleurCase() =="" and \
+#                grille.getCaseSpecifique(ligne + delta + 1, colonne + delta + 1).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta + 1, colonne + delta + 1).getCouleurCase() =="" and \
+#                grille.getCaseSpecifique(ligne + delta + 2, colonne + delta + 2).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta + 2, colonne + delta + 2).getCouleurCase() =="" and \
+#                grille.getCaseSpecifique(ligne + delta + 3, colonne + delta + 3).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta + 3, colonne + delta + 3).getCouleurCase() == "" :
+#                 count += 1
+#     return count
+
+# def compter_diagonales_inverse_autour(grille, ligne, colonne, symbole):
+#     count = 0
+#     for delta in range(-3, 1):
+#         if colonne - delta >= 0 and colonne - delta + 3 < grille.getNbColonnes() \
+#                 and ligne + delta >= 0 and ligne + delta + 3 < grille.getNbLignes():
+#             if grille.getCaseSpecifique(ligne + delta, colonne - delta).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta, colonne - delta).getCouleurCase() =="" and \
+#                grille.getCaseSpecifique(ligne + delta + 1, colonne - delta + 1).getCouleurCase() == symbole or  grille.getCaseSpecifique(ligne + delta + 1, colonne - delta + 1).getCouleurCase() =="" and \
+#                grille.getCaseSpecifique(ligne + delta + 2, colonne - delta + 2).getCouleurCase() == symbole or  grille.getCaseSpecifique(ligne + delta + 2, colonne - delta + 2).getCouleurCase() =="" and \
+#                grille.getCaseSpecifique(ligne + delta + 3, colonne - delta + 3).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta + 3, colonne - delta + 3).getCouleurCase() == "":
+#                 count += 1
+#     return count
 
 def compter_lignes_autour(grille, ligne, colonne, symbole):
     count = 0
@@ -43,7 +89,7 @@ def compter_diagonales_autour(grille, ligne, colonne, symbole):
     for delta in range(-3, 1):
         if colonne + delta >= 0 and colonne + delta + 3 < grille.getNbColonnes() \
                 and ligne + delta >= 0 and ligne + delta + 3 < grille.getNbLignes():
-            if grille.getCaseSpecifique(ligne + delta, colonne + delta).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta, colonne + delta).getCouleurCase() =="" and \
+            if grille.getCaseSpecifique(ligne + delta, colonne + delta).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta, colonne + delta).getCouleurCase() == "" and \
                grille.getCaseSpecifique(ligne + delta + 1, colonne + delta + 1).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta + 1, colonne + delta + 1).getCouleurCase() =="" and \
                grille.getCaseSpecifique(ligne + delta + 2, colonne + delta + 2).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta + 2, colonne + delta + 2).getCouleurCase() =="" and \
                grille.getCaseSpecifique(ligne + delta + 3, colonne + delta + 3).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta + 3, colonne + delta + 3).getCouleurCase() == "" :
@@ -55,7 +101,7 @@ def compter_diagonales_inverse_autour(grille, ligne, colonne, symbole):
     for delta in range(-3, 1):
         if colonne - delta >= 0 and colonne - delta + 3 < grille.getNbColonnes() \
                 and ligne + delta >= 0 and ligne + delta + 3 < grille.getNbLignes():
-            if grille.getCaseSpecifique(ligne + delta, colonne - delta).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta, colonne - delta).getCouleurCase() =="" and \
+            if grille.getCaseSpecifique(ligne + delta, colonne - delta).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta, colonne - delta).getCouleurCase() == ""and \
                grille.getCaseSpecifique(ligne + delta + 1, colonne - delta + 1).getCouleurCase() == symbole or  grille.getCaseSpecifique(ligne + delta + 1, colonne - delta + 1).getCouleurCase() =="" and \
                grille.getCaseSpecifique(ligne + delta + 2, colonne - delta + 2).getCouleurCase() == symbole or  grille.getCaseSpecifique(ligne + delta + 2, colonne - delta + 2).getCouleurCase() =="" and \
                grille.getCaseSpecifique(ligne + delta + 3, colonne - delta + 3).getCouleurCase() == symbole or grille.getCaseSpecifique(ligne + delta + 3, colonne - delta + 3).getCouleurCase() == "":
@@ -67,6 +113,8 @@ def compter_possibilites_autour(grille, ligne, colonne, symbole):
     possibilites = 0
     # Recherche de puissance 4 horizontalement
     possibilites += compter_lignes_autour(grille, ligne, colonne, symbole)
+    # print("possibilité ligne")
+    # print (possibilites)
     # Recherche de puissance 4 verticalement
     possibilites += compter_colonnes_autour(grille, ligne, colonne, symbole)
     # Recherche de puissance 4 en diagonale (/)
@@ -80,19 +128,23 @@ def evaluation(grille):
     meilleurCoup = 0
     valeurCoup = 0 
     symbole = "O"
-    if rechercher_gagnant(grille) == symbole:  # Si le coup permet au X de gagner
+    # Recherche si le O a gagné
+    if rechercher_gagnant(grille) == symbole:  
         valeurCoup +=1000
     symbole = "X"
-    if rechercher_gagnant(grille) == symbole:  # Si le coup permet au O de gagner
+    #  Recherche si le X a gagné
+    if rechercher_gagnant(grille) == symbole:  
         valeurCoup -=1000
     for colonne in range(grille.getNbColonnes()):
         for ligne in range(grille.getNbLignes()):
             symbole = "O" 
-            valeurCoup += compter_possibilites_autour(grille,ligne,colonne,symbole)
+            # Si la case est un O compte les possibilités autour
+            if (grille.getCaseSpecifique(ligne, colonne).getCouleurCase() == symbole):
+                valeurCoup += compter_possibilites_autour(grille,ligne,colonne,symbole)
             symbole = "X"
-            valeurCoup -= compter_possibilites_autour(grille,ligne,colonne,symbole)
-    print ("valeur coup: ")
-    print(valeurCoup)        
+            # Si la case est un X compte les possibilités autour
+            if (grille.getCaseSpecifique(ligne, colonne).getCouleurCase() == symbole):
+                valeurCoup -= compter_possibilites_autour(grille,ligne,colonne,symbole)
     return valeurCoup
                 
 # Fonction pour que l'IA joue de manière aléatoire
@@ -128,29 +180,63 @@ def evaluation(grille):
 #                 meilleurCoup = numeroCoupTeste
 #     return meilleurCoup
 
-def min_Max(grille, symbole):
-    profondeur = 3 
-    listeValeurs = []
-    grilleMinMax = copy.deepcopy(grille)
-    while profondeur > 0:
-        if (profondeur % 2 == 1):
-            symbole = "X"
-        else:
-            symbole= "O"
-        for numeroCoupTeste in range(grille.getNbColonnes()):
-            numLigne = 0
-            while not grilleMinMax.getCaseSpecifique(numLigne, numeroCoupTeste).getEstVide() and numLigne < 5:
-                numLigne += 1
-            case = grilleMinMax.getCaseSpecifique(numLigne, numeroCoupTeste)
-            case.setCouleurCase(symbole)
-            evaluation(grille,symbole)
-            
+# def min_Max(grille, symbole):
+#     profondeur = 3 
+#     listeValeurs = []
+#     grilleMinMax = copy.deepcopy(grille)
+#     while profondeur > 0:
+#         if (profondeur % 2 == 1):
+#             symbole = "X"
+#         else:
+#             symbole= "O"
+#         for numeroCoupTeste in range(grille.getNbColonnes()):
+#             numLigne = 0
+#             while not grilleMinMax.getCaseSpecifique(numLigne, numeroCoupTeste).getEstVide() and numLigne < 5:
+#                 numLigne += 1
+#             case = grilleMinMax.getCaseSpecifique(numLigne, numeroCoupTeste)
+#             case.setCouleurCase(symbole)
+#             evaluation(grille,symbole)
 
+def minimax(grille, profondeur):
+    if rechercher_gagnant(grille) or profondeur == 0:
+        return evaluation(grille)
+    
+    if TourIA(profondeur):
+        valeur_max = float("-inf")
+        for fils in generer_fils(grille,"X"):
+            valeur_max = max(valeur_max, minimax(fils, profondeur - 1))
+        return valeur_max
+    else:
+        valeur_min = float("inf")
+        for fils in generer_fils(grille,"O"):
+            valeur_min = min(valeur_min, minimax(fils, profondeur - 1))
+        return valeur_min
+
+
+def TourIA(profondeur):
+    if profondeur%2==0:
+        return True
+    else:
+        return False
+
+
+def generer_fils(grille,symbole):
+    grilleMinMax = copy.deepcopy(grille)
+    fils = []
+    for numeroGrilleTeste in range(grilleMinMax.getNbColonnes()):
+        numLigne = 0
+        while not grilleMinMax.getCaseSpecifique(numLigne, numeroGrilleTeste).getEstVide() and numLigne < 5:
+            numLigne += 1
+        case = grilleMinMax.getCaseSpecifique(numLigne, numeroGrilleTeste)
+        case.setCouleurCase(symbole)
+        fils.append(grilleMinMax)
+    return fils
 
 # Fonction pour que l'IA joue avec l'évaluation
 def jouer_IA(grille, symbole):
     while True:
-        choix_IA = evaluation(grille, symbole)  # Choix aléatoire de la colonne
+        choix_IA = minimax(grille, 3)  # Choix aléatoire de la colonne
+        print (choix_IA)
         colonne = choix_IA  
         numLigne = 0
         while not grille.getCaseSpecifique(numLigne, colonne).getEstVide() and numLigne < 5:
@@ -161,8 +247,6 @@ def jouer_IA(grille, symbole):
         case.setEstVideFalse()
         case.setCouleurCase(symbole)
         break
-
-
 
 def rechercher_gagnant(grille):
     for ligne in range(grille.getNbLignes()):
@@ -245,7 +329,7 @@ if __name__ == "__main__":
             evaluation(grille)
             # Si le jeu n'est pas terminé et ce n'est pas le tour de l'IA
             if not quitter and symboleJoueur != "X":
-                jouer_IA_aleatoire(grille, "X")  # L'IA joue avec le symbole "X"
+                jouer_IA(grille, "X")  # L'IA joue avec le symbole "X"
                 # Affichage de la grille après le coup de l'IA
                 grille.afficher_grille() 
                 # Vérifier si la grille est pleine après le coup du joueur
