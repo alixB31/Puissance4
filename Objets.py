@@ -104,10 +104,3 @@ class Case:
 
     def setEstVideFalse(self):
         self.estVide = False
-
-class Pion:
-    # Initalisation
-    def __init__(self, couleur):
-        self.couleurPion = couleur # False = Croix ; True = Rond
-
-
